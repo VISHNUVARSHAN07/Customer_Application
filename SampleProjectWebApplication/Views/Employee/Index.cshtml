@@ -1,0 +1,70 @@
+﻿@model IEnumerable<SampleProjectWebApplication.Models.EmployeeDetails>
+@{
+    ViewBag.Title = "Index";
+}
+<div class="row text-right" style="margin-top:10px; padding-right:15px">
+    <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Create", "Employee")'">+ Add Employee</button>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete Employee Details</h5>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+            </div>
+            <div class="modal-body">
+                Are You Sure You Want to Delete this Employee Detail?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <a id="deleteYes" class="btn btn-primary btn-sm" href="/Employee/Delete?EmpId=">Yes</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="table-responsive-lg" style="margin-top:10px">
+    <table class="table table-bordered">
+        <thead>
+            <tr class="bg-info">
+                <th scope="col">Employee Number</th>
+                <th scope="col">Employee Name</th>
+                <th scope="col">Department</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model)
+            {
+                <tr>
+                    <td>@i.Employee_Number</td>
+                    <td>@i.Employee_Name</td>
+                    <td>@i.Department</td>
+                    <td>@i.Status</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" href="/Employee/Edit?EmpId=@i.Emp_Id">Edit</a>
+                        <button type="button" class="btn btn-danger btn-sm" @*data-toggle="modal"*@ onclick="deleteEmp(@i.Emp_Id)" @*data-target="#exampleModalCenter"*@>
+                            Delete
+                        </button>
+
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#menubtn").removeClass("d-none");
+    });
+    function deleteEmp(Emp_id) {
+        var element = document.querySelector("#deleteYes");
+        element.href = '/Employee/Delete?EmpId=' + Emp_id;
+        $("#exampleModalCenter").modal("show");
+    }
+</script>

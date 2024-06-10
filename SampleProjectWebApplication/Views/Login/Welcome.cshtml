@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = "Welcome";
+}
+
+@if (Session["User_Name"] != null)
+{
+    <h2>Welcome @Session["User_Name"].ToString()</h2>
+}
+
+<img src="https://t3.ftcdn.net/jpg/02/41/32/08/240_F_241320835_Z2fuURdWsRgtTnkARGQqiorzH8p4fnE5.jpg" alt="Welcome" style="height:100%; width:100%;" />
+
+<script>
+    $(document).ready(function () {
+        $("#menubtn").removeClass("d-none");
+    });
+</script>

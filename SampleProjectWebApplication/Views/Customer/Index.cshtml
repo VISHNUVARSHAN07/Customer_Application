@@ -1,0 +1,129 @@
+﻿@model IEnumerable<SampleProjectWebApplication.Models.CustomerDetails>
+@{
+    ViewBag.Title = "Index";
+    var m = Model;
+}
+
+<h2>Customer List</h2>
+<div class="row text-right" style="margin-top:10px; padding-right:15px">
+    <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Create", "Customer")'">Create</button>
+</div>
+<div class="row text-left" style="margin-top:10px; padding-left:15px">
+    <button type="button" class="btn btn-toolbar" onclick="searchFilter()">Filter</button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete Employee Details</h5>
+            </div>
+            <div class="modal-body">
+                Are You Sure You Want to Delete this Customer Detail?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <a id="deleteYes" class="btn btn-primary btn-sm" href="/Customer/Delete?CustomerId=">Yes</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="searchPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Search</h5>
+            </div>
+            <div class="modal-body">
+                <label for="Search" class="form-label">Search</label>
+                <input type="text" class="form-control" id="Search" placeholder="Enter to Search">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button id="SearchOk" value="" class="btn btn-primary btn-sm" onclick="onOkClick();">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive-lg" style="margin-top:10px">
+    <table class="table table-bordered">
+        <thead>
+            <tr class="bg-info">
+                <th scope="col">Name</th>
+                <th scope="col">Valid From</th>
+                <th scope="col">Valid To</th>
+                <th scope="col">Customer Type</th>
+                <th scope="col">Customer Status</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model)
+            {
+                <tr>
+                    <td>@i.Name</td>
+                    <td>@i.Valid_From.?Date</td>
+                    <td>@i.Valid_To.?Date</td>
+                    <td>@i.Customer_Type</td>
+                    <td>@i.Customer_Status</td>
+                    <td>
+
+                        <a class="btn btn-primary btn-sm" href="/Customer/Edit?CustomerId=@i.Customer_Id">Edit</a>
+
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteCustomer(@i.Customer_Id)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $("#menubtn").removeClass("d-none");
+    });
+
+    function deleteCustomer(Customer_Id) {
+        var element = document.querySelector("#deleteYes");
+        element.href = '/Customer/Delete?CustomerId=' + Customer_Id;
+        $("#exampleModalCenter").modal("show");
+    }
+
+    function searchFilter() {
+        $("#searchPopup").modal("show");
+    }
+
+    function onOkClick() {
+
+        //$("table tbody tr").each(function (row) {
+        //    debugger;
+        //    let searchText = $("#Search").val();
+        //    var Name = $(this).find("td")[0].innerText;
+        //    if (!Name.startsWith(searchText)) {
+        //        $(this).addClass("hidRow");
+        //    }
+        //    else {
+        //        $(this).addClass("displayRow");
+
+        //    }
+        //});
+
+        debugger;
+      @*// let s= JSON.parse( @Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+       //let model= JsonSerializer.Serialize(@Model);*@
+        window.location.href = "/Customer/Index?filter=" + $("#Search").val();
+    }
+</script>
+
+<style>
+    .hidRow{ display:none;}
+    .displayRow {
+        display: block;
+    }
+</style>

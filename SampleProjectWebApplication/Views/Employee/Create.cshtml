@@ -1,0 +1,726 @@
+﻿@model SampleProjectWebApplication.Models.EmployeeDetails
+@{
+    ViewBag.Title = "Create";
+}
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="~/Scripts/Create.js"></script>
+
+<div id="Head">
+    <div class="col-lg-12" style="margin-top: 10px">    
+        <div class="col-lg-9">
+            <div class="row">
+                <div class="col-lg-4">
+                    <label for="employeeNumber" class="form-label">Employee Number</label>
+                    <input type="text" class="form-control" id="employeeNumber" value="@Model.Employee_Number" placeholder="Enter Employee Number ">
+
+                </div>
+
+                <div class="col-lg-4">
+                    <label for="employeeName" class="form-label">Employee Name</label>
+                    <input type="text" class="form-control" id="employeeName" value="@Model.Employee_Name" placeholder="Enter Employee Name">
+                </div>
+
+                <div class="col-lg-4">
+                    <label for="Gender" class="form-label">Gender</label>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <button type="button" id="Male" onclick="onMaleClick();" class="btn">Male</button>
+                        <button type="button" id="Female" onclick="onFemaleClick();" class="btn">Female</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 10px">
+                <div class="col-lg-4">
+                    <label for="joiningDate" class="form-label">Joining Date</label>
+                    <input type="date" value="@Model.Joining_Date" class="form-control" id="joiningDate">
+                </div>
+
+                <div class="col-lg-4">
+                    <label for="Department" class="form-label">Department</label>
+                    @Html.DropDownListFor(m => m.Department, new List<SelectListItem>
+                    { new SelectListItem{Text="Finance And Admin", Value="Finance And Admin"},
+                    new SelectListItem{Text="Business Process Department", Value="Business Process Department"},
+                    new SelectListItem{Text="Development", Value="Development"},
+                    new SelectListItem{Text="Testing", Value="Testing"},
+                    new SelectListItem{Text="Infra", Value="Infra"}},
+                    "Please select", htmlAttributes: new
+                         {
+                             @class = "form-control",
+                             @id = "departmentDropDown"
+                    })
+                </div>
+                <div class="col-lg-4">
+                    <label for="Status" class="form-label">Status</label>
+                    @Html.DropDownListFor(m => m.Status, new List<SelectListItem>
+                    { new SelectListItem{Text="On Probation", Value="On Probation"},
+                     new SelectListItem{Text="On Contract", Value="On Contract" } },
+                     "Please select", new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+
+        </div>
+    </div>
+
+    <div class="col-lg-12" style="margin-top:10px">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#asset">Asset</a></li>
+            <li><a data-toggle="tab" href="#salary">Salary</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="asset" class="tab-pane fade in active">
+                <div class="row text-right" style="margin-top:10px; padding-right:15px">
+                    <button type="button" class="btn btn-primary" onclick="onAssetClick('event')">Create</button>
+                </div>
+                <div class="table-responsive-lg" style="margin-top:10px">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="bg-info">
+                                <th scope="col">Asset Type</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Brand Name</th>
+                                <th scope="col">Model Name</th>
+                                <th scope="col">Assigned To</th>
+                                <th scope="col">Action</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="assestTbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="salary" class="tab-pane fade">
+                <div class="col-lg-6">
+
+                    <div class="col-lg-6">
+                        <h3>Earnings</h3>
+
+                        <label for="monthlyBasicSalary" class="form-label">Monthly Basic Salary</label>
+                        <input type="text" class="form-control" value="@Model.Monthly_Basic_Salary" id="monthlyBasicSalary" onchange="OnChangeSalary(event)" onkeypress="onMonthlyBasic(event)" placeholder="Enter Monthly Basic Salary ">
+
+                        <label for="monthlyHra" class="form-label">Monthly HRA</label>
+                        <input type="text" class="form-control" value="@Model.Monthly_HRA" id="monthlyHra" onchange="OnChangeSalary(event)" onkeypress="onMonthlyHra(event)" placeholder="Enter Monthly HRA">
+
+                        <label for="monthlyTa" class="form-label">Monthly TA</label>
+                        <input type="text" class="form-control" value="@Model.Monthly_TA" id="monthlyTa" onchange="OnChangeSalary(event)" onkeypress="onMonthlyTa(event)" placeholder="Enter Monthly TA">
+
+                        <label for="monthlyGross" class="form-label">Monthly Gross</label>
+                        <input disabled class="form-control" value="@Model.Monthly_Gross" id="monthlyGross">
+
+                        <label for="monthlyTakehome" class="form-label">Monthly Takehome</label>
+                        <input disabled class="form-control" value="@Model.Monthly_Takehome" id="monthlyTakehome">
+
+                    </div>
+                    <div class="col-lg-6">
+                        <h3>Deduction</h3>
+
+                        <label for="monthlyPf" class="form-label">Monthly PF</label>
+                        <input type="text" class="form-control" value="@Model.Monthly_PF" id="monthlyPf" onchange="OnChangeDeduction(event)" placeholder="Enter Monthly PF ">
+
+                        <label for="monthlyEsi" class="form-label">Monthly ESI</label>
+                        <input type="text" class="form-control" value="@Model.Monthly_ESI" id="monthlyEsi" onchange="OnChangeDeduction(event)" placeholder="Enter Monthly ESI">
+
+                        <label for="yearlyGross" class="form-label">Yearly Gross</label>
+                        <input disabled class="form-control" value="@Model.Yearly_Gross" id="yearlyGross">
+
+                        <label for="yearlyTakehome" class="form-label">Yearly Takehome</label>
+                        <input disabled class="form-control" value="@Model.Yearly_Takehome" id="yearlyTakehome">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row text-right" style="margin-top:10px; padding-right:15px;">
+    <button class="btn-success btn-sm" onclick="SaveEmployeeDetail()">Save</button>
+    <button class="btn btn-danger btn-sm" onclick="window.location.href = '@Url.Action("Index", "Employee")'">Cancel</button>
+</div>
+
+<div class="modal" id="AssetModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Asset Details</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label for="assetType" id="assetTypeLabel" class="form-label">Asset Type</label>
+                        @Html.DropDownListFor(m => m.Status, new List<SelectListItem>
+                        { new SelectListItem{Text="Id Card", Value="Id Card"},
+                          new SelectListItem{Text="Laptop",Value="Laptop"},
+                          new SelectListItem{Text="Tablet", Value="Tablet" } },
+                          "Please select", new { @class = "form-control", @id = "assetType" })
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label for="description" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="description" placeholder="Enter the Description" />
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="brandName" class="form-label">Brand Name</label>
+                        <input type="text" class="form-control" id="brandName" placeholder="Enter the Brand Name">
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label for="modelName" class="form-label">Model Name</label>
+                        <input type="text" class="form-control" id="modelName" placeholder="Enter the Model Name">
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label for="assignedTo" class="form-label">Assigned To</label>
+                        <input type="text" class="form-control" id="assignedTo" placeholder="Assigned To">
+                    </div>
+
+                    <div id="addDuplicateAlert" class="col-lg-12" style="margin: 10px;color:red">
+                        <span> Duplicate entry found !!!! </span>
+                    </div>
+                    <div id="mandatoryAddAsset" class="col-lg-12" style="margin: 10px;color:red">
+                        <span>All fields are mandatory. </span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="close" class="btn btn-secondary" onclick="Close()">Close</button>
+                    <button type="button" id="save" class="btn btn-primary" onclick="Save()">Add Asset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="AlertWindow" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Employee Detail Alert</h5>
+                @*<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>*@
+            </div>
+            <div class="modal-body">
+                <p id="outmessage">Saved Successfully</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="window.location.href = '@Url.Action("Index", "Employee")'">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*popup for mandatory*@
+
+<div class="modal fade" role="dialog" id="theModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Mandatory</h4>
+            </div>
+            <div class="modal-body">
+                <span id="first"></span>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-close btn-block" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Delete popups*@
+
+<div class="modal fade" id="assetDeletePopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete Asset Details</h5>
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>*@
+            </div>
+            <div class="modal-body">
+                Are You Sure You Want to Delete this Asset Detail?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                @*<a id="deleteYes" data-rowIndex="" value="" class="btn btn-primary btn-sm" onclick="onAssetDeleteConfirm(this)">Yes</a>*@
+                <a id="deleteYes" data-rowIndex="" value="" class="btn btn-primary btn-sm" onclick="onAssetDeleteConfirm(this.getAttribute('data-rowIndex'))">Yes</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="AssetEditModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Asset Details</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div><input type="text" class="form-control" value="" id="EditrowId" style="display:none" /></div>
+                    <div><input type="text" class="form-control" value="" id="EditassetId" style="display:none" /></div>
+                    <div class="col-lg-6">
+                        <label for="assetType" id="EditassetTypeLabel" class="form-label">Asset Type</label>
+                        @Html.DropDownListFor(m => m.Status, new List<SelectListItem>
+                        { new SelectListItem{Text="Id Card", Value="Id Card"},
+                          new SelectListItem{Text="Laptop",Value="Laptop"},
+                          new SelectListItem{Text="Tablet", Value="Tablet" } },
+                          "Please select", new { @class = "form-control", @id = "EditassetType" })
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label for="description" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="Editdescription" placeholder="Enter the Description" />
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label for="brandName" class="form-label">Brand Name</label>
+                        <input type="text" class="form-control" id="EditbrandName" placeholder="Enter the Brand Name">
+
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label for="modelName" class="form-label">Model Name</label>
+                        <input type="text" class="form-control" id="EditmodelName" placeholder="Enter the Model Name">
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label for="assignedTo" class="form-label">Assigned To</label>
+                        <input type="text" class="form-control" id="EditassignedTo" placeholder="Assigned To">
+                    </div>
+
+                    <div id="editDuplicateAlert" class="col-lg-12" style="margin: 10px;color:red">
+                        <span> Duplicate entry found !!!! </span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="close1" class="btn btn-secondary" onclick="EditClose()">Close</button>
+                    <button type="button" id="save" class="btn btn-primary" onclick="Editsave()">Add Asset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@**@
+
+<script>
+    let assetDetails = [], gender = "";
+     assetDetails = '@Html.Raw(Json.Encode(Model.AssetDetails))';
+
+    $(document).ready(function () {
+        $("#menubtn").removeClass("d-none");
+        $(window).on("load", function () {
+            /*debugger*/
+            gender = "@Model.Gender";
+            let value = "@string.Format("{0:yyyy-MM-dd}", Model.Joining_Date)";
+                $("#editDuplicateAlert").css("display", "none");
+                $("#addDuplicateAlert").css("display", "none");
+            ////setDefaultMandate()
+            if (gender == "M") {
+                $("#Male").addClass("btn-primary");
+                $("#Female").removeClass("btn-primary");
+            } else {
+                $("#Female").addClass("btn-primary");
+                $("#Male").removeClass("btn-primary");
+            }
+            $("#joiningDate").val(value);
+
+            let htmlTd = [];
+            assetDetails = JSON.parse(assetDetails)
+            /*debugger*/
+            for (let i = 0; i <= assetDetails.length - 1; i++)
+            {
+                htmlTd.push(
+                    "<tr id='rowIndex" + assetDetails[i].RowIndex + "'>" +
+
+                    "<td>" + assetDetails[i].Asset_Type + "</td>" +
+
+                    "<td>" + assetDetails[i].Description + "</td>" +
+
+                    "<td>" + assetDetails[i].Brand_Name + "</td>" +
+
+                    "<td>" + assetDetails[i].Model_Name + "</td>" +
+
+                    "<td>" + assetDetails[i].Assigned_To + "</td>" +
+
+                    "<td> <button class='btn btn-primary btn-sm' onclick='onAssetEdit(this)'> Edit </button> <button class='btn btn-danger btn-sm'  data-rowIndex='" + assetDetails[i].RowIndex + "' onclick='onAssetDelete(this)'> Delete </button> </td>" +
+
+
+                     "</tr>"
+
+                );
+            }
+            $("#assestTbody").html(htmlTd);
+        });
+    })
+
+    /*Separate function*/
+
+    function onAssetClick() {
+
+        $("#AssetModal").show('modal');
+    }
+    setDefaultMandate()
+
+    function onAssetEdit(e) {
+        debugger
+        setDefaultMandate()
+        let index = $(e).closest('td').parent()[0].sectionRowIndex
+        $("#EditrowId").val(assetDetails[index].RowIndex);
+        $("#EditassetId").val(assetDetails[index].Asset_Id);
+        $("#EditassetType").val(assetDetails[index].Asset_Type);
+        $("#Editdescription").val(assetDetails[index].Description);
+        $("#EditbrandName").val(assetDetails[index].Brand_Name);
+        $("#EditmodelName").val(assetDetails[index].Model_Name);
+        $("#EditassignedTo").val(assetDetails[index].Assigned_To);
+
+        $("#AssetEditModal").show('modal');
+    }
+
+    function onAssetDelete(e) {
+        debugger
+        $("#deleteYes").attr("data-rowIndex", parseInt(e.dataset.rowindex));
+        $("#assetDeletePopup").modal('show')
+    }
+
+    function onAssetDeleteConfirm(rowIndexValue) {
+        debugger
+        ////var rowIndexValue = $("#deleteYes").data("rowIndex");
+        $("#rowIndex" + parseInt(rowIndexValue)).css("display", "none");
+        assetDetails.forEach(function (val, i) {
+            //debugger;
+            if (val.RowIndex == parseInt(rowIndexValue)) {
+                val.IsDeleted = true;
+            }
+        });
+        $("#assetDeletePopup").modal('hide')
+
+        ////$("#AssetEditModal").hide('modal');
+    }
+
+
+
+    function Close() {
+        debugger
+        $("#assetType").val("");
+        $("#description").val("");
+        $("#brandName").val("");
+        $("#modelName").val("");
+        $("#assignedTo").val("");
+        $("#addDuplicateAlert").css("display", "none");
+        $("#editDuplicateAlert").css("display", "none");
+        $("#AssetModal").hide('modal');
+        setDefaultMandate()
+    }
+
+
+    function EditClose() {
+        debugger
+        $("#EditassetType").val("");
+        $("#EditassetId").val("");
+        $("#EditrowId").val("");
+        $("#Editdescription").val("");
+        $("#EditbrandName").val("");
+        $("#EditmodelName").val("");
+        $("#EditassignedTo").val("");
+        $("#addDuplicateAlert").css("display", "none");
+        $("#editDuplicateAlert").css("display", "none");
+        $("#AssetEditModal").hide('modal');
+        setDefaultMandate()
+    }
+
+    function Save() {
+        debugger
+        /*debugger*/
+        let instance = {
+            Asset_Type: $("#assetType").val(),
+            Description: $("#description").val(),
+            Brand_Name: $("#brandName").val(),
+            Model_Name: $("#modelName").val(),
+            Assigned_To: $("#assignedTo").val(),
+            RowIndex: assetDetails.length+1,
+        };
+
+        let isvalid = instance.Asset_Type && instance.Description && instance.Brand_Name && instance.Model_Name && instance.Assigned_To ? true : false;
+        if (isvalid) {
+            let isDuplicate = false;
+            assetDetails.forEach(function (val, i) {
+                //debugger;
+                if (val.Asset_Type == instance.Asset_Type) {
+                    isDuplicate = true;
+                }
+            });
+            if (!isDuplicate) {
+                assetDetails.push(JSON.parse(JSON.stringify(instance)));
+                $("#assestTbody").html("");
+                let htmlTd = [];
+                for (let i = 0; i <= assetDetails.length - 1; i++) {
+                    htmlTd.push(
+                        "<tr id='rowIndex" + assetDetails[i].RowIndex + "'>" +
+
+                        "<td>" + assetDetails[i].Asset_Type + "</td>" +
+
+                        "<td>" + assetDetails[i].Description + "</td>" +
+
+                        "<td>" + assetDetails[i].Brand_Name + "</td>" +
+
+                        "<td>" + assetDetails[i].Model_Name + "</td>" +
+
+                        "<td>" + assetDetails[i].Assigned_To + "</td>" +
+
+                        "<td> <button class='btn btn-primary btn-sm' onclick='onAssetEdit(this)'> Edit </button> <button class='btn btn-danger btn-sm'  data-rowIndex='" + assetDetails[i].RowIndex + "' onclick='onAssetDelete(this)'> Delete </button> </td>" +
+
+                        "</tr>"
+                    );
+                }
+                $("#assestTbody").html(htmlTd);
+                Close();
+            } else {
+                $("#addDuplicateAlert").css("display", "block");
+            }
+            $("#mandatoryAddAsset").css("display", "none");
+        } else {
+            $("#mandatoryAddAsset").css("display", "block");
+        }
+
+    }
+
+    function setDefaultMandate() {
+        $("#mandatoryAddAsset").css("display", "none");
+        $("#addDuplicateAlert").css("display", "none");
+        $("#editDuplicateAlert").css("display", "none");
+    }
+
+    function Editsave() {
+        debugger
+        let instance = {
+            Asset_Id: $("#EditassetId").val(),
+            RowIndex: $("#EditrowId").val(),
+            Asset_Type: $("#EditassetType").val(),
+            Description: $("#Editdescription").val(),
+            Brand_Name: $("#EditbrandName").val(),
+            Model_Name: $("#EditmodelName").val(),
+            Assigned_To: $("#EditassignedTo").val(),
+        };
+        debugger;
+        assetDetails.forEach(function (val, i) {
+            //debugger;
+            if (val.RowIndex == $("#EditrowId").val()) {
+                ////val.Emp_Id = "";
+                val.Asset_Type = instance.Asset_Type;
+                val.Assigned_To = instance.Assigned_To;
+                val.Brand_Name = instance.Brand_Name;
+                val.Description = instance.Description;
+                val.Model_Name = instance.Model_Name;
+            }
+        });
+
+        ////assetDetails.push(JSON.parse(JSON.stringify(instance)));
+        $("#assestTbody").html("");
+        let htmlTd = [];
+        for (let i = 0; i <= assetDetails.length - 1; i++) {
+            htmlTd.push(
+
+                //"<tr style='display:none'>" + "<td>" + assetDetails[i].RowIndex + "</td>" +
+
+                "<tr id='rowIndex" + assetDetails[i].RowIndex + "'>" +
+
+                "<td>" + assetDetails[i].Asset_Type + "</td>" +
+
+                "<td>" + assetDetails[i].Description + "</td>" +
+
+                "<td>" + assetDetails[i].Brand_Name + "</td>" +
+
+                "<td>" + assetDetails[i].Model_Name + "</td>" +
+
+                "<td>" + assetDetails[i].Assigned_To + "</td>" +
+                "<td> <button class='btn btn-primary btn-sm' onclick='onAssetEdit(this)'> Edit </button> <button class='btn btn-danger btn-sm'  data-rowIndex='" + assetDetails[i].RowIndex + "' onclick='onAssetDelete(this)'> Delete </button> </td>" +
+
+                "</tr>"
+            );
+        }
+
+        $("#assestTbody").html(htmlTd);
+        EditClose();
+    }
+
+    function onMaleClick() {
+        $("#Male").addClass("btn-primary");
+        $("#Female").removeClass("btn-primary");
+        gender = "M";
+    }
+
+    function onFemaleClick() {
+        $("#Female").addClass("btn-primary");
+        $("#Male").removeClass("btn-primary");
+        gender = "F";
+    }
+
+    function onMonthlyBasic(e) {
+        let value = parseInt(e.key);
+        let basic = $("#monthlyBasicSalary").val() != ("" && null) ? ($("#monthlyBasicSalary").val() + value) : (0 + value);
+        let hra = $("#monthlyHra").val() != ("" && null) ? $("#monthlyHra").val() : 0;
+        let ta = $("#monthlyTa").val() != ("" && null) ? $("#monthlyTa").val() : 0;
+        let calculatedValue = parseInt(basic) + parseInt(hra) + parseInt(ta);
+        $("#monthlyGross").val(calculatedValue);
+    }
+
+    function onMonthlyHra(e) {
+        let value = parseInt(e.key);
+        let basic = $("#monthlyBasicSalary").val() != ("" && null) ? $("#monthlyBasicSalary").val() : 0;
+        let hra = $("#monthlyHra").val() != ("" && null) ? ($("#monthlyHra").val() + value) : (0 + value);
+        let ta = $("#monthlyTa").val() != ("" && null) ? $("#monthlyTa").val() : 0;
+        let calculatedValue = parseInt(basic) + parseInt(hra) + parseInt(ta);
+        $("#monthlyGross").val(calculatedValue);
+    }
+
+    function onMonthlyTa(e) {
+        let value = parseInt(e.key);
+        let basic = $("#monthlyBasicSalary").val() != ("" && null) ? $("#monthlyBasicSalary").val() : 0;
+        let hra = $("#monthlyHra").val() != ("" && null) ? $("#monthlyHra").val() : 0;
+        let ta = $("#monthlyTa").val() != ("" && null) ? ($("#monthlyTa").val() + value) : (0 + value);
+        let calculatedValue = parseInt(basic) + parseInt(hra) + parseInt(ta);
+        $("#monthlyGross").val(calculatedValue);
+    }
+
+    function OnChangeSalary() {
+        let basic = $("#monthlyBasicSalary").val() != ("" && null) ? $("#monthlyBasicSalary").val() : 0;
+        let hra = $("#monthlyHra").val() != ("" && null) ? $("#monthlyHra").val() : 0;
+        let ta = $("#monthlyTa").val() != ("" && null) ? $("#monthlyTa").val() : 0;
+        let calculatedGross = parseInt(basic) + parseInt(hra) + parseInt(ta);
+
+        let pf = $("#monthlyPf").val() != ("" && null) ? $("#monthlyPf").val() : 0;
+        let esi = $("#monthlyEsi").val() != ("" && null) ? $("#monthlyEsi").val() : 0;
+        let monthlyTakeHome = calculatedGross + parseInt(pf) + parseInt(esi);
+
+        let calculatedTakeHome = monthlyTakeHome - (parseInt(pf) + parseInt(esi));
+
+        $("#monthlyGross").val(monthlyTakeHome);
+        $("#monthlyTakehome").val(calculatedTakeHome);
+
+        let yearlyGross = 12 * parseInt($("#monthlyGross").val());
+        let yearlyTakeHome = 12 * parseInt($("#monthlyTakehome").val());
+        $("#yearlyGross").val(yearlyGross);
+        $("#yearlyTakehome").val(yearlyTakeHome);
+    }
+
+    function OnChangeDeduction() {
+        let pf = $("#monthlyPf").val() != ("" && null) ? $("#monthlyPf").val() : 0;
+        let esi = $("#monthlyEsi").val() != ("" && null) ? $("#monthlyEsi").val() : 0;
+        let calculated = parseInt(pf) + parseInt(esi);
+        let monthlyGross = $("#monthlyGross").val();
+        let calculatedTakeHome = parseInt(monthlyGross) - calculated;
+        $("#monthlyTakehome").val(calculatedTakeHome);
+
+        let yearlyGross = 12 * parseInt($("#monthlyGross").val());
+        let yearlyTakeHome = 12 * parseInt($("#monthlyTakehome").val());
+        $("#yearlyGross").val(yearlyGross);
+        $("#yearlyTakehome").val(yearlyTakeHome);
+    }
+
+    function checkMandate11() {
+        let isvalid = true;
+
+        return isvalid;
+    }
+
+    function checkMandate(saveObject) {
+        let result = { fieldName: "", isvalid:true };
+        if (!saveObject.Employee_Name) {
+            result.isvalid = false;
+            result.fieldName += "Employee Name is Mandatory!!" + "<br>";
+        }
+        if (!saveObject.Department) {
+            result.isvalid = false;
+            result.fieldName += "Department is Mandatory" + "<br>";
+        }
+
+        if (!saveObject.Gender) {
+            result.isvalid = false;
+            result.fieldName += "Gender is Mandatory" + "<br>"
+        }
+        if (!saveObject.Joining_Date) {
+            result.isvalid = false;
+            result.fieldName += "Joining Date is Mandatory" + "<br>"
+        }
+        if (!saveObject.Status) {
+            result.isvalid = false;
+            result.fieldName +="Status is Mandatory" + "<br>"
+        }
+        if (!saveObject.Monthly_Basic_Salary) {
+            result.isvalid = false;
+            result.fieldName += "Monthly Basic Salary is Mandatory" + "<br>"
+        }
+        if (!saveObject.Monthly_HRA) {
+            result.isvalid = false;
+            result.fieldName += "Monthly HRA is Mandatory" + "<br>"
+        }
+        if (!saveObject.Monthly_TA) {
+            result.isvalid = false;
+            result.fieldName += "Monthly TA is Mandatory" + "<br>"
+        }
+        if (!saveObject.Monthly_PF) {
+            result.isvalid = false;
+            result.fieldName += "Monthly PF is Mandatory" + "<br>"
+        }
+        if (!saveObject.Monthly_ESI) {
+            result.isvalid = false;
+            result.fieldName += "Monthly ESI is Mandatory" + "<br>"
+        }
+        return result;
+    }
+
+    function SaveEmployeeDetail() {
+        debugger
+        let saveObject = {
+            Emp_Id: @Model.Emp_Id,
+            Employee_Number: $("#employeeNumber").val(),
+            Employee_Name: $("#employeeName").val(),
+            Department: $("#departmentDropDown").val(),
+            Status: $("#Status").val(),
+            Joining_Date: $("#joiningDate").val(),
+            Gender: gender,
+            Monthly_Basic_Salary: $("#monthlyBasicSalary").val(),
+            Monthly_HRA: $("#monthlyHra").val(),
+            Monthly_TA: $("#monthlyTa").val(),
+            Monthly_PF: $("#monthlyPf").val(),
+            Monthly_ESI: $("#monthlyEsi").val(),
+            Monthly_Gross: $("#monthlyGross").val(),
+            Monthly_Takehome: $("#monthlyTakehome").val(),
+            Yearly_Gross: $("#yearlyGross").val(),
+            Yearly_Takehome: $("#yearlyTakehome").val(),
+            AssetDetails: assetDetails
+        }
+        let checkMandate = this.checkMandate(saveObject);
+        if (checkMandate.isvalid) {
+            $.ajax({
+                method: "POST",
+                url: "/Employee/SaveAndUpdate",
+                data: { instance: JSON.parse(JSON.stringify(saveObject)) },
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (response) {
+                    $("#outmessage").html("Saved Successfully");
+                    $("#AlertWindow").show("modal");
+                }
+            });
+        } else {
+            //// pop up
+            ///$("#first").text(checkMandate.fieldName);
+            //var span = document.getElementById("first");
+            //span.textContent = checkMandate.fieldName;
+            $("#first").html(checkMandate.fieldName)
+            $('#theModal').modal('toggle')
+
+        }
+    }
+
+    /*Separate function*/
+</script>
+
+

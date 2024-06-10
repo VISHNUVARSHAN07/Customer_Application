@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+}
+
+@using (Html.BeginForm("Register", "Login", FormMethod.Post))
+{
+    <div class="col-lg-12" style="margin-top:10px;">
+        <div class="col-lg-4">
+            <span class="details">Full Name</span>
+            <input type="text" class="form-control" name="First_Name" placeholder="Enter your First Name" value="" required>
+        </div>
+        <div class="col-lg-4">
+            <span class="details">Last Name</span>
+            <input type="text" class="form-control" name="Last_Name" placeholder="Enter your Last Name" value="" required>
+        </div>
+        <div class="col-lg-4">
+            <span class="details">Dob</span>
+            <input type="date" class="form-control" name="Dob" value="" required>
+        </div>
+    </div>
+    <div class="col-lg-12" style="margin-top:10px;">
+        <div class="col-lg-4">
+            <span class="details">User Name</span>
+            <input type="text" class="form-control" name="User_Name" placeholder="Enter your User Name" value="" required>
+        </div>
+        <div class="col-lg-4">
+            <span class="details">Password</span>
+            <input type="password" class="form-control" name="Password" placeholder="Enter your password" value="" required>
+        </div>
+        <div class="col-lg-4">
+            <span class="details">Confirm Password</span>
+            <input type="password" class="form-control" placeholder="Confirm your password" required>
+        </div>
+    </div>
+
+    <div class="col-lg-11" style="margin-top:10px;text-align:end;">
+        @*<input style="width:10%;" class="btn btn-danger" value="Cancel" />*@
+        <button class="btn btn-danger" style="width:10%;" onclick="window.location.href = '@Url.Action("Index", "Login")'">Cancel</button>
+        <input style="width:10%;" class="btn btn-success" onclick="RegisterationClick()" type="submit" value="Register">
+
+    </div>
+
+    //popup for Registeration
+
+    <div class="modal" id="RegisterationClick" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">User Registeration</h5>
+                </div>
+                <div class="modal-body">
+                    <p id="outmessage">Saved Successfully</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@*<script>
+    function RegisterationClick() {
+        debugger
+        $("#RegisterationClick").modal('show');
+    }
+</script>*@

@@ -1,0 +1,530 @@
+﻿@model SampleProjectWebApplication.Models.CustomerDetails
+@{
+    ViewBag.Title = "Create";
+}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<h2>Customer Search and Create</h2>
+
+<div id="Head">
+    <div class="row text-right" style="margin-top:10px; padding-right:15px;">
+        <button class="btn-success btn-sm" onclick="SaveCustomerDetail()">Save</button>
+        <button class="btn btn-info btn-sm" onclick="window.location.href = '@Url.Action("Index", "Customer")'">Cancel</button>
+    </div>
+    <div class="col-lg-12" style="margin-top: 10px">
+        <h3>Create Customer</h3>
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-3">
+                    <label for="employeeNumber" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="Name" value="@Model.Name" placeholder="Enter the Name">
+                </div>
+
+                <div class="col-lg-3">
+                    <label for="validFrom" class="form-label">Valid From</label>
+                    <input type="date" class="form-control" id="validFrom" value="@Model.Valid_From">
+                </div>
+
+                <div class="col-lg-3">
+                    <label for="validTo" class="form-label">Valid To</label>
+                    <input type="date" class="form-control" id="validTo" value="@Model.Valid_To">
+                </div>
+
+                <div class="col-lg-3">
+                    <label for="customerType" class="form-label">Customer Type</label>
+                    @Html.DropDownListFor(m => m.Customer_Type, new List<SelectListItem>
+                    { new SelectListItem{Text="Labour", Value="Labour"},
+                    new SelectListItem{Text="General", Value="General"},
+                    new SelectListItem{Text="Goods", Value="Goods"},
+                    new SelectListItem{Text="Others", Value="Others"}},
+                    "Please select", htmlAttributes: new
+                         {
+                             @class = "form-control",
+                             @id = "customerType"
+                    })
+                </div>
+                <div class="col-lg-3">
+                    <label for="customerStatus" class="form-label">Customer Status</label>
+                    @Html.DropDownListFor(m => m.Customer_Status, new List<SelectListItem>
+                    { new SelectListItem{Text="Active", Value="Active"},
+                     new SelectListItem{Text="Inactive", Value="Inactive" } },
+                     "Please select", new
+                          {
+                         @class = "form-control",
+                         @id = "customerStatus"
+                     })
+                </div>
+
+                <div class="col-lg-3">
+                    <label for="phoneNumber" class="form-label">Phone Number</label>
+                    <input type="number" class="form-control" id="Phonenumber" value="@Model.Phone_Number" placeholder="Enter Phone Number">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row text-right" style="margin-top:10px; padding-right:15px">
+        <button type="button" class="btn btn-primary" onclick="onPlusClick()">+</button>
+    </div>
+
+    <div class="col-lg-12" style="margin-top:10px">
+        <h3>Customer List</h3>
+        <div class="table-responsive-lg" style="margin-top:10px">
+            <table class="table table-bordered">
+                <thead>
+                    <tr class="bg-warning">
+                        <th scope="col">Address Type</th>
+                        <th scope="col">Street</th>
+                        <th scope="col">Area</th>
+                        <th scope="col">Location</th>
+                        <th scope="col">Pincode</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="customerDetailsTbody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="PersonalModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Personal Details</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label for="addressType" id="addressTypelabel" class="form-label">Address Type</label>
+                        @Html.DropDownListFor(m => m.Customer_Status, new List<SelectListItem>
+                        { new SelectListItem{Text="Home", Value="Home"},
+                          new SelectListItem{Text="Office", Value="Office" } },
+                          "Please select", new { @class = "form-control", @id = "addressType" })
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label for="street" class="form-label">Street</label>
+                        <input type="text" class="form-control" id="street" placeholder="Enter the street" />
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="Area" class="form-label">Area</label>
+                        <input type="text" class="form-control" id="Area" placeholder="Enter the Area">
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label for="Location" id="Locationlabel" class="form-label">Location</label>
+                        @Html.DropDownListFor(m => m.Customer_Status, new List<SelectListItem>
+                        { new SelectListItem{Text="Chennai", Value="Chennai"},
+                          new SelectListItem{Text="Kovai",Value="Kovai"},
+                          new SelectListItem{Text="Salem", Value="Salem" } },
+                          "Please select", new { @class = "form-control", @id = "Location" })
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label for="Pincode" class="form-label">Pincode</label>
+                        <input type="number" class="form-control" id="Pincode" placeholder="Enter the Pincode">
+                    </div>
+
+                    @*<div id="addDuplicateAlert" class="col-lg-12" style="margin: 10px;color:red">
+                            <span> Duplicate entry found !!!! </span>
+                        </div>*@
+
+                    <div id="mandatoryAddDetails" class="col-lg-12 d-none" style="margin: 10px;color:red">
+                        <span>All fields are mandatory. </span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="close" class="btn btn-secondary" onclick="Close()">Close</button>
+                    <button type="button" id="save" class="btn btn-primary" onclick="Save()">Add Details</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="AlertWindow" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Employee Detail Alert</h5>
+                @*<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>*@
+            </div>
+            <div class="modal-body">
+                <p id="outmessage">Saved Successfully</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="window.location.href = '@Url.Action("Index", "Customer")'">Okay</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*popup for mandatory*@
+
+<div class="modal fade" role="dialog" id="theModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Mandatory</h4>
+            </div>
+            <div class="modal-body">
+                <span id="first"></span>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-close btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Delete popups*@
+
+<div class="modal fade" id="personalDeletePopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete Personal Details</h5>
+            </div>
+            <div class="modal-body">
+                Are You Sure You Want to Delete this Personal Detail?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <a id="deleteYes" data-rowIndex="" value="" class="btn btn-primary btn-sm" onclick="onPersonalDeleteConfirm(this.getAttribute('data-rowIndex'))">Yes</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="PersonalEditModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Personal Details</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div><input type="text" class="form-control" value="" id="EditrowId" style="display:none" /></div>
+                    <div><input type="text" class="form-control" value="" id="EditPersonalId" style="display:none" /></div>
+                    <div class="col-lg-6">
+                        <label for="addressType" id="addressTypeEditlabel" class="form-label">Address Type</label>
+                        @Html.DropDownListFor(m => m.Customer_Status, new List<SelectListItem>
+                        { new SelectListItem{Text="Home", Value="Home"},
+                          new SelectListItem{Text="Office", Value="Office" } },
+                          "Please select", new { @class = "form-control", @id = "EditaddressType" })
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label for="street" class="form-label">Street</label>
+                        <input type="text" class="form-control" id="Editstreet" placeholder="Enter the street" />
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="Area" class="form-label">Area</label>
+                        <input type="text" class="form-control" id="EditArea" placeholder="Enter the Area">
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label for="Location" id="LocationEditlabel" class="form-label">Location</label>
+                        @Html.DropDownListFor(m => m.Customer_Status, new List<SelectListItem>
+                        { new SelectListItem{Text="Chennai", Value="Chennai"},
+                          new SelectListItem{Text="Kovai",Value="Kovai"},
+                          new SelectListItem{Text="Salem", Value="Salem" } },
+                          "Please select", new { @class = "form-control", @id = "EditLocation" })
+                    </div>
+
+                    <div class="col-lg-6">
+                        <label for="Pincode" class="form-label">Pincode</label>
+                        <input type="number" class="form-control" id="EditPincode" placeholder="Enter the Pincode">
+                    </div>
+
+                    @*<div id="addDuplicateAlert" class="col-lg-12" style="margin: 10px;color:red">
+                            <span> Duplicate entry found !!!! </span>
+                        </div>*@
+
+                    <div id="mandatoryAddDetails" class="col-lg-12 d-none" style="margin: 10px;color:red">
+                        <span>All fields are mandatory. </span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="close1" class="btn btn-secondary" onclick="EditClose()">Close</button>
+                    <button type="button" id="save" class="btn btn-primary" onclick="EditSave()">Add Details</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+
+    let personal_Details = [];
+    personal_Details= '@Html.Raw(Json.Encode(Model.Personal_Details))';
+    $(document).ready(function () {
+        $(window).on("load", function () {
+            $("#menubtn").removeClass("d-none");
+            let value = "@string.Format("{0:yyyy-MM-dd}", Model.Valid_From)";
+            let value1 = "@string.Format("{0:yyyy-MM-dd}", Model.Valid_To)";
+            $("#validFrom").val(value);
+            $("#validTo").val(value1);
+
+            let htmlTd = [];
+            personal_Details = JSON.parse(personal_Details)
+            for (let i = 0; i <= personal_Details.length - 1; i++)
+            {
+
+                htmlTd.push(
+                    "<tr id='rowIndex" + i + "'>" +
+
+                    "<td>" + personal_Details[i].Address_Type + "</td>" +
+
+                    "<td>" + personal_Details[i].Street + "</td>" +
+
+                    "<td>" + personal_Details[i].Area + "</td>" +
+
+                    "<td>" + personal_Details[i].Location + "</td>" +
+
+                    "<td>" + personal_Details[i].Pincode + "</td>" +
+
+                    "<td> <button class='btn btn-primary btn-sm' onclick='onPersonalEdit(this)'> Edit </button> <button class='btn btn-danger btn-sm'  data-rowIndex='" + personal_Details[i].RowIndex + "' onclick='onPersonalDelete(this)'> Delete </button> </td>" +
+
+                    "</tr>"
+
+                );
+            }
+            $("#customerDetailsTbody").html(htmlTd);
+        })
+    }
+    )
+
+    function onPlusClick() {
+
+        $("#PersonalModal").show('modal');
+    }
+    setDefaultMandate()
+
+    function onPersonalEdit(e) {
+        debugger
+        setDefaultMandate()
+        let index = $(e).closest('td').parent()[0].sectionRowIndex
+        $("#EditrowId").val(personal_Details[index].RowIndex);
+        $("#EditPersonalId").val(personal_Details[index].Personal_Id);
+        $("#EditaddressType").val(personal_Details[index].Address_Type);
+        $("#Editstreet").val(personal_Details[index].Street);
+        $("#EditArea").val(personal_Details[index].Area);
+        $("#EditLocation").val(personal_Details[index].Location);
+        $("#EditPincode").val(personal_Details[index].Pincode);
+
+        $("#PersonalEditModal").show('modal');
+    }
+
+    function onPersonalDelete(e)
+    {
+        $("#deleteYes").attr("data-rowIndex", parseInt(e.dataset.rowindex));
+        $("#personalDeletePopup").modal('show')
+    }
+
+    function onPersonalDeleteConfirm(rowIndexValue) {
+        $("#rowIndex" + parseInt(rowIndexValue)).css("display", "none");
+        personal_Details.forEach(function (val, i) {
+            if (val.RowIndex == parseInt(rowIndexValue)) {
+                val.IsDeleted = true;
+            }
+        });
+        $("#personalDeletePopup").modal('hide')
+    }
+
+    function Close() {
+        debugger
+        $("#addressType").val("");
+        $("#street").val("");
+        $("#Area").val("");
+        $("#Location").val("");
+        $("#Pincode").val("");
+        //$("#addDuplicateAlert").css("display", "none");
+        //$("#editDuplicateAlert").css("display", "none");
+        $("#PersonalModal").hide('modal');
+        setDefaultMandate()
+    }
+
+    function EditClose() {
+            $("#EditrowId").val(""),
+            $("#EditPersonalId").val(""),
+            $("#EditaddressType").val(""),
+            $("#Editstreet").val(""),
+            $("#EditArea").val(""),
+            $("#EditLocation").val(""),
+            $("#EditPincode").val(""),
+
+            $("#PersonalEditModal").hide('modal');
+        setDefaultMandate()
+    }
+
+    function Save() {
+        debugger
+        let instance = {
+            Address_Type: $("#addressType").val(),
+            Street: $("#street").val(),
+            Area: $("#Area").val(),
+            Location: $("#Location").val(),
+            Pincode: $("#Pincode").val(),
+            RowIndex: personal_Details.length + 1,
+        };
+
+        let isvalid = instance.Address_Type && instance.Street && instance.Area && instance.Location && instance.Pincode ? true : false;
+        if (isvalid) {
+            let isDuplicate = false;
+            personal_Details.forEach(function (val, i) {
+                if (val.personal_Details == instance.Address_Type) {
+                    isDuplicate = true;
+                }
+            });
+            if (!isDuplicate) {
+                personal_Details.push(JSON.parse(JSON.stringify(instance)));
+                $("#customerDetailsTbody").html("");
+                let htmlTd = [];
+                for (let i = 0; i <= personal_Details.length - 1; i++) {
+                    htmlTd.push(
+                        "<tr id='rowIndex" + personal_Details[i].RowIndex + "'>" +
+
+                        "<td>" +  personal_Details[i].Address_Type + "</td>" +
+
+                        "<td>" + personal_Details[i].Street + "</td>" +
+
+                        "<td>" + personal_Details[i].Area + "</td>" +
+
+                        "<td>" + personal_Details[i].Location + "</td>" +
+
+                        "<td>" + personal_Details[i].Pincode + "</td>" +
+
+                        "<td> <button class='btn btn-primary btn-sm' onclick='onPersonalEdit(this)'> Edit </button> <button class='btn btn-danger btn-sm'  data-rowIndex='" + personal_Details[i].RowIndex + "' onclick='onPersonalDelete(this)'> Delete </button> </td>" +
+
+                        "</tr>"
+
+                    );
+                }
+                $("#customerDetailsTbody").html(htmlTd);
+                Close();
+            }
+        } else {
+            $("#mandatoryAddDetails").removeClass('d-none');
+        }
+    }
+
+    function setDefaultMandate() {
+        $("#mandatoryAddAsset").css("display", "none");
+    }
+
+    function EditSave() {
+        debugger
+        let instance = {
+            Personal_Id: $("#EditPersonalId").val(),
+            RowIndex: $("#EditrowId").val(),
+            Address_Type: $("#EditaddressType").val(),
+            Street: $("#Editstreet").val(),
+            Area: $("#EditArea").val(),
+            Location: $("#EditLocation").val(),
+            Pincode: $("#EditPincode").val(),
+
+        };
+        debugger;
+        personal_Details.forEach(function (val, i) {
+            if (val.RowIndex == parseInt($("#EditrowId").val())) {
+                val.Address_Type = instance.Address_Type;
+                val.Street = instance.Street;
+                val.Area = instance.Area;
+                val.Location = instance.Location;
+                val.Pincode = instance.Pincode;
+            }
+        });
+        $("#customerDetailsTbody").html("");
+        let htmlTd = [];
+        for (let i = 0; i <= personal_Details.length - 1; i++) {
+            htmlTd.push(
+                "<tr id='rowIndex" + personal_Details[i].RowIndex + "'>" +
+
+                "<td>" + personal_Details[i].Address_Type + "</td>" +
+
+                "<td>" + personal_Details[i].Street + "</td>" +
+
+                "<td>" + personal_Details[i].Area + "</td>" +
+
+                "<td>" + personal_Details[i].Location + "</td>" +
+
+                "<td>" + personal_Details[i].Pincode + "</td>" +
+
+                "<td> <button class='btn btn-primary btn-sm' onclick='onPersonalEdit(this)'> Edit </button> <button class='btn btn-danger btn-sm'  data-rowIndex='" + personal_Details[i].RowIndex + "' onclick='onPersonalDelete(this)'> Delete </button> </td>" +
+
+                "</tr>"
+            );
+        }
+
+        $("#customerDetailsTbody").html(htmlTd);
+        EditClose();
+    }
+
+    function checkMandate(saveObject) {
+        let result = { fieldName: "", isvalid: true};
+        if (!saveObject.Name) {
+            result.isvalid = false;
+            result.fieldName += "Name is Mandatory" + "<br>";
+        }
+        if (!saveObject.Valid_From) {
+            result.isvalid = false;
+            result.fieldName += "Valid From is Mandatory" + "<br>";
+        }
+        if (!saveObject.Valid_To) {
+            result.isvalid = false;
+            result.fieldName += "Valid To is Mandatory" + "<br>";
+        }
+        if (!saveObject.Customer_Type) {
+            result.isvalid = false;
+            result.fieldName += "Customer Type is Mandatory" + "<br>";
+        }
+        if (!saveObject.Customer_Status) {
+            result.isvalid = false;
+            result.fieldName += "Customer Status is Mandatory" + "<br>";
+        }
+        return result;
+    }
+
+    function SaveCustomerDetail() {
+        debugger
+        let saveObject = {
+            Customer_Id: @Model.Customer_Id,
+            Name: $("#Name").val(),
+            Valid_From: $("#validFrom").val(),
+            Valid_To: $("#validTo").val(),
+            Customer_Type: $("#customerType").val(),
+            Customer_Status: $("#customerStatus").val(),
+            Phone_Number: $("#Phonenumber").val(),
+            Personal_Details: personal_Details
+        }
+        let checkMandate = this.checkMandate(saveObject);
+        if (checkMandate.isvalid) {
+            $.ajax({
+                method: "POST",
+                url: "/Customer/SaveAndUpdate",
+                data: { instance: JSON.parse(JSON.stringify(saveObject)) },
+                dataType: "json",
+                async: false,
+                cache: false,
+                success: function (response) {
+                    $("outmessage").html("Saved Successfully");
+                    $("#AlertWindow").show("modal");
+                }
+            });
+        } else {
+            $("#first").html(checkMandate.fieldName)
+            $('#theModal').modal('toggle')
+        }
+    }
+
+</script>
+
+<style>
+    .d-none {
+        display: none;
+    }
+</style>
